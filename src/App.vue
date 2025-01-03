@@ -1,5 +1,8 @@
 <script setup>
-import { reactive } from 'vue';
+  import { reactive } from 'vue';
+  import Cabecalho from './components/Cabecalho.vue'
+  import Formulario from './components/Formulario.vue'
+  import ListaDeTarefas from './components/ListasDeTarefas.vue'
 
   const estado = reactive({
     filtro: 'todas',
@@ -53,42 +56,9 @@ import { reactive } from 'vue';
 
 <template>
   <div class="container">
-    <header class="p-5 mb-4 mt-4 bg-light rounded-3">
-      <h1>Minhas tarefas</h1>
-      <p>
-        você possui {{ getTarefasPendentes().length }} tarefas pendentes
-      </p>
-    </header>
-    <form @submit.prevent="cadastraTarefa">
-      <div class="row">
-        <div class="col">
-          <input v-bind:value="estado.tarefaTemp" @change="evento => estado.tarefaTemp = evento.target.value" required type="text" placeholder="Digite aqui a descrição da tarefa" class="form-control">
-        </div>
-        <div class="col-md-2">
-          <button type="submit" class="btn btn-primary">Cadastrar</button>
-        </div>
-        <div class="col-md-2">
-          <select @change="evento => estado.filtro = evento.target.value" class="form-control">
-            <option value="Todas">Todas tarefas</option>
-            <option value="Pendentes">Pendentes</option>
-            <option value="Finalizadas">Finalizadas</option>
-          </select>
-        </div>
-      </div>
-    </form>
-    <ul class="list-group mt-4">
-      <li class="list-group-item" v-for="tarefa in getTarefasFiltradas()">
-        <input @change="evento => tarefa.finalizada = evento.target.checked" v-bind:checked="tarefa.finalizada" v-bind:id="tarefa.titulo" type="checkbox">
-        <label v-bind:class="{done: tarefa.finalizada === true}" class="ms-3" v-bind:for="tarefa.titulo">
-          {{ tarefa.titulo }}
-        </label>
-      </li>
-    </ul>
+    <Cabecalho v-bind:tarefas-pendentes="getTarefasPendentes().length"/>
+    <Formulario v-bind:trocar-filtro="evento => estado.filtro = evento.target.value" v-bind:tarefa-temp="estado.tarefaTemp" v-bind:edita-tarefa-temp="evento => estado.tarefaTemp = evento.target.value" v-bind:-cadastra-tarefa="cadastraTarefa"/>
+    <ListaDeTarefas v-bind:tarefas="getTarefasFiltradas()"/>
   </div>
 </template>
 
-<style scoped>
-.done{
-  text-decoration: line-through;
-}
-</style>
